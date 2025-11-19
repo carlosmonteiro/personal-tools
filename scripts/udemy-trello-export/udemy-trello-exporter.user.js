@@ -10,22 +10,67 @@
 (function () {
     'use strict';
 
-    async function expandAllSections() {
-        const collapsedSections = document.querySelectorAll('[data-testid="section-toggle"][aria-expanded="false"]');
+    async function expandAllSections(button) {
+        button.innerText = 'Finding sections...';
         
-        for (const section of collapsedSections) {
-            section.click();
-            await new Promise(resolve => setTimeout(resolve, 300)); // Wait for expansion
+        // Phase 1: Make all sections visible
+        console.log('[Udemy Exporter] Phase 1: Making all sections visible...');
+        
+        // Look for "Show more sections" button
+        const showMoreButtons = document.querySelectorAll('button');
+        for (const btn of showMoreButtons) {
+            const text = btn.textContent.toLowerCase();
+            if (text.includes('show more') || text.includes('expand') || text.includes('see all') || text.includes('sections')) {
+                console.log('[Udemy Exporter] Clicking show more button:', btn.textContent);
+                btn.click();
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
         }
         
-        // Wait a bit more for all content to load
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        button.innerText = 'Expanding sections...';
+        
+        // Phase 2: Expand all collapsed sections
+        console.log('[Udemy Exporter] Phase 2: Expanding collapsed sections...');
+        
+        const sections = document.querySelectorAll('div.accordion-panel-module--panel--Eb0it');
+        console.log(`[Udemy Exporter] Found ${sections.length} total sections`);
+        let expandedCount = 0;
+        
+        for (let i = 0; i < sections.length; i++) {
+            const section = sections[i];
+            button.innerText = `Expanding ${i + 1}/${sections.length}...`;
+            
+            // Check if section has visible lectures
+            const hasVisibleLectures = section.querySelectorAll('.curriculum-item-link--curriculum-item--KX8XG').length > 0;
+            
+            if (!hasVisibleLectures) {
+                const expandButton = section.querySelector('button[aria-expanded="false"]') || 
+                                   section.querySelector('[data-testid="section-toggle"][aria-expanded="false"]') ||
+                                   section.querySelector('.section--section-title--svpHP button');
+                
+                if (expandButton) {
+                    expandButton.click();
+                    expandedCount++;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                } else {
+                    const sectionHeader = section.querySelector('.section--section-title--svpHP');
+                    if (sectionHeader && sectionHeader.getAttribute('aria-expanded') === 'false') {
+                        sectionHeader.click();
+                        expandedCount++;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                }
+            }
+        }
+        
+        button.innerText = 'Ready to export!';
+        console.log(`[Udemy Exporter] Expansion complete: ${expandedCount} sections expanded`);
+        alert(`Expansion complete! Found ${sections.length} sections, expanded ${expandedCount} collapsed ones. Ready to export to Trello.`);
+        
+        return true; // Signal that expansion is complete
     }
 
     async function extractCourseContent() {
-        // First expand all sections
-        await expandAllSections();
-        
         const sections = document.querySelectorAll('div.accordion-panel-module--panel--Eb0it');
         if (!sections.length) throw new Error("No course sections found.");
 
@@ -92,12 +137,20 @@
 
         button.addEventListener('click', async () => {
             try {
-                button.innerText = '⏳';
                 button.disabled = true;
                 
-                const courseData = await extractCourseContent();
-                const confirmSend = confirm("Export course to Trello as card with checklists?");
-                if (confirmSend) await sendAsCardWithChecklists(courseData);
+                // Phase 1: Expand all sections
+                const expansionComplete = await expandAllSections(button);
+                
+                if (expansionComplete) {
+                    // Phase 2: Export to Trello
+                    const confirmSend = confirm("All sections are now expanded. Export course to Trello as card with checklists?");
+                    if (confirmSend) {
+                        button.innerText = 'Exporting...';
+                        const courseData = await extractCourseContent();
+                        await sendAsCardWithChecklists(courseData);
+                    }
+                }
                 
                 button.innerText = '📤';
                 button.disabled = false;
