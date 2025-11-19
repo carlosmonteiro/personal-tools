@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Udemy to Trello Exporter (Card único)
+// @name         Udemy to Trello Exporter
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Exporta curso da Udemy como um único card com checklists para o Trello
+// @description  Export Udemy course as a single card with checklists to Trello
 // @match        https://*.udemy.com/course/*
 // @grant        none
 // ==/UserScript==
@@ -12,7 +12,7 @@
 
     async function extractCourseContent() {
         const sections = document.querySelectorAll('div.accordion-panel-module--panel--Eb0it');
-        if (!sections.length) throw new Error("Nenhuma seção de curso encontrada.");
+        if (!sections.length) throw new Error("No course sections found.");
 
         const courseTitle = '[Udemy] ' + document.title.split("|")[0].trim();
 
@@ -57,7 +57,7 @@
             }
         }
 
-        alert('Curso exportado para Trello com sucesso!');
+        alert('Course exported to Trello successfully!');
     }
 
     function createButton() {
@@ -78,11 +78,11 @@
         button.addEventListener('click', async () => {
             try {
                 const courseData = await extractCourseContent();
-                const confirmSend = confirm("Exportar curso para Trello como card com checklists?");
+                const confirmSend = confirm("Export course to Trello as card with checklists?");
                 if (confirmSend) await sendAsCardWithChecklists(courseData);
             } catch (err) {
-                alert("⚠️ Você precisa estar na página de aulas do curso com a grade de seções carregada.");
-                console.error('[Udemy to Trello] Erro:', err);
+                alert("⚠️ You need to be on the course curriculum page with sections loaded.");
+                console.error('[Udemy to Trello] Error:', err);
             }
         });
 
