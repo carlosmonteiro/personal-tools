@@ -50,7 +50,7 @@ A collection of Chrome extensions and userscripts designed to automate recurring
 ```
 personal-tools/
 ├── README.md
-├── tampermonkey-scripts/     # Userscripts for Tampermonkey
+├── scripts/                  # Userscripts for Tampermonkey
 │   ├── script-name/
 │   │   ├── script.user.js
 │   │   └── README.md
