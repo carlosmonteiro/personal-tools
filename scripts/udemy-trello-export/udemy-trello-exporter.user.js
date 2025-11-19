@@ -10,7 +10,22 @@
 (function () {
     'use strict';
 
+    async function expandAllSections() {
+        const collapsedSections = document.querySelectorAll('[data-testid="section-toggle"][aria-expanded="false"]');
+        
+        for (const section of collapsedSections) {
+            section.click();
+            await new Promise(resolve => setTimeout(resolve, 300)); // Wait for expansion
+        }
+        
+        // Wait a bit more for all content to load
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
     async function extractCourseContent() {
+        // First expand all sections
+        await expandAllSections();
+        
         const sections = document.querySelectorAll('div.accordion-panel-module--panel--Eb0it');
         if (!sections.length) throw new Error("No course sections found.");
 
@@ -77,12 +92,20 @@
 
         button.addEventListener('click', async () => {
             try {
+                button.innerText = '⏳';
+                button.disabled = true;
+                
                 const courseData = await extractCourseContent();
                 const confirmSend = confirm("Export course to Trello as card with checklists?");
                 if (confirmSend) await sendAsCardWithChecklists(courseData);
+                
+                button.innerText = '📤';
+                button.disabled = false;
             } catch (err) {
                 alert("⚠️ You need to be on the course curriculum page with sections loaded.");
                 console.error('[Udemy to Trello] Error:', err);
+                button.innerText = '📤';
+                button.disabled = false;
             }
         });
 

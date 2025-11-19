@@ -50,7 +50,7 @@ The script will prompt you for three pieces of information each time you use it:
 
 ## Usage
 
-1. Navigate to any Udemy course page with the curriculum visible (e.g., `udemy.com/course/linear-algebra-course/`)
+1. Navigate to any Udemy course page with the curriculum visible (e.g., [udemy.com/course/linear-algebra-course/](https://www.udemy.com/course/linear-algebra-course/))
 2. Look for the blue 📤 button in the top-left corner
 3. Click the button to extract course content
 4. Confirm the export when prompted
