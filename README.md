@@ -78,8 +78,8 @@ This is a personal repository, but suggestions and improvements are welcome via 
 
 ## License
 
-This project is for personal use. Individual scripts may have different licensing terms - check each script's documentation.
+This project is licensed under the MIT License. Individual scripts may have different licensing terms - check each script's documentation.
 
 ---
 
-*Last updated: November 2024*
+*Last updated: November 2025*
