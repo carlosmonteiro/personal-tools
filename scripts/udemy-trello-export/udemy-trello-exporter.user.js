@@ -95,7 +95,7 @@
         return { courseTitle, courseDescription, content };
     }
 
-    async function sendAsCardWithChecklists({ courseTitle, courseDescription, content }) {
+    async function sendAsCardWithChecklists({ courseTitle, courseDescription, content }, button) {
         const listId = prompt("Enter your Trello List ID:");
         const apiKey = prompt("Enter your Trello API Key:");
         const apiToken = prompt("Enter your Trello API Token:");
@@ -105,10 +105,14 @@
             return;
         }
 
+        button.innerText = 'Creating card...';
         const cardRes = await fetch(`https://api.trello.com/1/cards?name=${encodeURIComponent(courseTitle)}&desc=${encodeURIComponent(courseDescription)}&idList=${listId}&key=${apiKey}&token=${apiToken}`, { method: 'POST' });
         const card = await cardRes.json();
 
-        for (const section of content) {
+        for (let i = 0; i < content.length; i++) {
+            const section = content[i];
+            button.innerText = `Exporting ${i + 1}/${content.length} sections...`;
+            
             const checklistRes = await fetch(`https://api.trello.com/1/checklists?name=${encodeURIComponent(section.section)}&idCard=${card.id}&key=${apiKey}&token=${apiToken}`, { method: 'POST' });
             const checklist = await checklistRes.json();
 
@@ -146,9 +150,8 @@
                     // Phase 2: Export to Trello
                     const confirmSend = confirm("All sections are now expanded. Export course to Trello as card with checklists?");
                     if (confirmSend) {
-                        button.innerText = 'Exporting...';
                         const courseData = await extractCourseContent();
-                        await sendAsCardWithChecklists(courseData);
+                        await sendAsCardWithChecklists(courseData, button);
                     }
                 }
                 
