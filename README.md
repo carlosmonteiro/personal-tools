@@ -28,7 +28,19 @@ A collection of Chrome extensions and userscripts designed to automate recurring
 
 ## Available Scripts
 
-*Scripts will be documented here as they are added to the repository*
+### Udemy Course Exporters
+
+#### [Udemy to Trello Exporter](scripts/udemy-trello-export/)
+- **Purpose**: Export Udemy course structure to Trello cards with checklists
+- **Features**: Auto-expansion of sections, progress tracking, secure credential prompts
+- **Usage**: Blue 📤 button on Udemy course pages
+- **Output**: Single Trello card with sections as checklists and lectures as checklist items
+
+#### [Udemy to CSV Exporter](scripts/udemy-csv-export/)
+- **Purpose**: Export Udemy course structure to CSV file for offline tracking
+- **Features**: Auto-expansion of sections, progress columns, automatic download
+- **Usage**: Green 📊 button on Udemy course pages  
+- **Output**: CSV file with Course, Section, Lecture, and Completed columns
 
 ## Visual Examples
 
